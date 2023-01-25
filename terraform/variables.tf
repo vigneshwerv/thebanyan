@@ -4,5 +4,6 @@ variable "hcloud_token" {
 
 variable "location" {
   type = string
+  // Default location is Hillsboro, OR (us-west)
   default = "hil"
 }

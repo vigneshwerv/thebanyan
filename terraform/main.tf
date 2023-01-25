@@ -1,5 +1,5 @@
 resource "hcloud_ssh_key" "vignesh" {
-  name = "vignesh"
+  name       = "vignesh"
   public_key = <<EOT
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKfrJNa6zj4eiTc3BIadsB+kMcUT2pIf+oapRNcx35lp vignesh.vaid@gmail.com
 EOT
@@ -10,8 +10,8 @@ resource "hcloud_firewall" "postgres-server" {
 
   rule {
     direction = "in"
-    protocol = "tcp"
-    port = "22"
+    protocol  = "tcp"
+    port      = "22"
     source_ips = [
       "0.0.0.0/0",
       "::/0"
@@ -20,8 +20,8 @@ resource "hcloud_firewall" "postgres-server" {
 
   rule {
     direction = "in"
-    protocol = "tcp"
-    port = "80"
+    protocol  = "tcp"
+    port      = "80"
     source_ips = [
       "0.0.0.0/0",
       "::/0"
@@ -30,8 +30,8 @@ resource "hcloud_firewall" "postgres-server" {
 
   rule {
     direction = "in"
-    protocol = "tcp"
-    port = "443"
+    protocol  = "tcp"
+    port      = "443"
     source_ips = [
       "0.0.0.0/0",
       "::/0"
@@ -40,9 +40,9 @@ resource "hcloud_firewall" "postgres-server" {
 }
 
 resource "hcloud_server" "postgres-server" {
-  image       = "debian-11"
-  name        = "postgres-server"
-  location    = var.location
+  image    = "debian-11"
+  name     = "postgres-server"
+  location = var.location
 
   server_type = "cpx11"
 
