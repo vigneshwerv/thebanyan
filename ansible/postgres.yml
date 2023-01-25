@@ -1,0 +1,53 @@
+- name: "Playing with Ansible"
+  hosts: postgres
+  tasks:
+    - name: "Add postgres to repository list"
+      ansible.builtin.apt_repository:
+        filename: pgdg
+        repo: deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release | lower }}-pgdg main
+        state: present
+    - name: "Add postgres repository key to apt"
+      ansible.builtin.apt_key:
+        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        state: present
+    - name: "Install postgresql"
+      ansible.builtin.apt:
+        name: postgresql-14
+        update_cache: yes
+    - name: "Start postgresql"
+      ansible.builtin.service:
+        name: postgresql
+        state: started
+        enabled: yes
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+                                                                                                                                                                                          1,1           All
