@@ -25,7 +25,7 @@
     dest: /usr/local/bin/endlessh
 - name: "Copy the endlessh service definition"
   ansible.builtin.copy:
-    src: /home/endlessh/util/endlessh.service
+    src: "{{ role_path }}/files/endlessh.service"
     dest: /etc/systemd/system/endlessh.service
 - name: "Grant permissions to run Endlessh on port 80"
   ansible.builtin.command:
