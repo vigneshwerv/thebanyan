@@ -1,4 +1,12 @@
 ---
+# Thanks to this GitHub comment for detailing the steps to install fail2ban
+# on Debian.
+# https://github.com/fail2ban/fail2ban/issues/3292#issuecomment-1678844644
+- name: "Install fail2ban dependencies"
+  ansible.builtin.package:
+    name:
+      - python3-systemd
+
 - name: "Install fail2ban"
   ansible.builtin.package:
     name: fail2ban
@@ -46,7 +54,7 @@
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
     state: present
-    validate: 'sshd -T -f %s'
+    validate: "sshd -T -f %s"
     mode: 0644
   with_items:
     - regexp: "^#PasswordAuthentication yes"

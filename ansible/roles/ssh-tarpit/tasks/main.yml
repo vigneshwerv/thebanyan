@@ -23,6 +23,12 @@
   ansible.builtin.copy:
     src: /home/endlessh/endlessh
     dest: /usr/local/bin/endlessh
+- name: "Set exec perms for /usr/local/bin/endlessh"
+  ansible.builtin.file:
+    path: /usr/local/bin/endlessh
+    owner: root
+    group: root
+    mode: '0751'
 - name: "Copy the endlessh service definition"
   ansible.builtin.copy:
     src: "{{ role_path }}/files/endlessh.service"
