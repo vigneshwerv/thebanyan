@@ -1,3 +1,8 @@
 */*.terraform/
+*/terraform.plan
+*/terraform.tfstate*
 */terraform.tfvars
 */.terraform.lock.hcl
+
+.env
+*.swp
