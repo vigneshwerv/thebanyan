@@ -33,7 +33,7 @@
         regex: '^#PermitEmptyPasswords no'
         line: 'PermitEmptyPasswords no'
     - name: "Disable PAM for SSH"
-      ansible.builtin.lineinfile
+      ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regex: '^UsePAM yes'
         line: 'UsePAM no'
