@@ -18,7 +18,7 @@
 - name: "Verify endlessh binary exists"
   ansible.builtin.fail:
     msg: "Failed to build endlessh. Could not find executable"
-  when: endless_stat.stat.exists
+  when: endlessh_stat.stat.exists
 - name: "Copy endlessh binary to /usr/local/bin"
   ansible.builtin.copy:
     src: /home/endlessh/endlessh
