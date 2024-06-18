@@ -30,13 +30,18 @@
     - name: "Disable empty password logins in SSH"
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
-        regex: '^#PermitEmptyPasswords no'
+        regexp: '^#PermitEmptyPasswords no'
         line: 'PermitEmptyPasswords no'
     - name: "Disable PAM for SSH"
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
-        regex: '^UsePAM yes'
+        regexp: '^UsePAM yes'
         line: 'UsePAM no'
+    - name: "Enable public-key authentication for SSH"
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#PubkeyAuthentication yes'
+        line: 'PubkeyAuthentication yes'
     - name: "Restart SSH server"
       ansible.builtin.service:
         name: ssh
