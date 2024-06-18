@@ -1,5 +1,5 @@
 - name: "Setup SSH server"
-  hosts: postgres
+  hosts: localhost
   vars_files:
     - vars.yml
   tasks:
