@@ -1,43 +1,61 @@
+---
 - name: "Install fail2ban"
   ansible.builtin.package:
     name: fail2ban
     state: latest
+
 - name: "Update fail2ban defaults"
   ansible.builtin.command:
     argv:
       - update-rc.d
       - fail2ban
       - defaults
-- name: "Set backend to systemd"
+  when:
+    - ansible_os_family == 'Debian'
+    - ansible_distribution_major_version | int >= 12
+
+- name: "Set logtarget to systemd journal"
   ansible.builtin.lineinfile:
-    path: /etc/fail2ban/jail.conf
-    regex: "^backend = auto"
-    line: "backend = systemd"
+    path: /etc/fail2ban/fail2ban.conf
+    regexp: "^logtarget = *"
+    line: "logtarget = SYSTEMD-JOURNAL"
+
+- name: "Copy jail configuration into place"
+  template:
+    src: "jail.conf.tmpl"
+    dest: /etc/fail2ban/jail.conf
+    owner: root
+    group: root
+    mode: 0644
+
 - name: "Enable fail2ban on init and start it"
   ansible.builtin.service:
     name: fail2ban
     state: started
     enabled: yes
-- name: "Change default SSH port to 5138"
+
+- name: "Change default SSH port to {{ security_ssh_port }}"
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "^#Port 22"
-    line: "Port 5138"
-- name: "Disable password-based logins"
+    line: "Port {{ security_ssh_port }}"
+
+- name: "Update SSH configuration to be more secure"
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: "^#PasswordAuthentication yes"
-    line: "PasswordAuthentication no"
-- name: "Disable empty password logins"
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: "^#PermitEmptyPasswords no"
-    line: "PermitEmptyPasswords no"
-- name: "Enable public-key authentication for SSH"
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: "^#PubkeyAuthentication yes"
-    line: "PubkeyAuthentication yes"
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    validate: 'sshd -T -f %s'
+    mode: 0644
+  with_items:
+    - regexp: "^#PasswordAuthentication yes"
+      line: "PasswordAuthentication no"
+    - regexp: "^#PermitEmptyPasswords no"
+      line: "PermitEmptyPasswords no"
+    - regexp: "^#PubkeyAuthentication yes"
+      line: "PubkeyAuthentication yes"
+
 - name: "Restart SSH server"
   ansible.builtin.service:
     name: ssh
