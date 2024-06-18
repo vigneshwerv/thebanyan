@@ -2,6 +2,17 @@
   ansible.builtin.package:
     name: fail2ban
     state: latest
+- name: "Update fail2ban defaults"
+  ansible.builtin.command:
+    argv:
+      - update-rc.d
+      - fail2ban
+      - defaults
+- name: "Set backend to systemd"
+  ansible.builtin.lineinfile:
+    path: /etc/fail2ban/jail.conf
+    regex: "^backend = auto"
+    line: "backend = systemd"
 - name: "Enable fail2ban on init and start it"
   ansible.builtin.service:
     name: fail2ban
