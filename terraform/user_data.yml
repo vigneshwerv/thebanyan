@@ -1,0 +1,20 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+
+# Disable password auth for root user
+ssh_pwauth: false
+
+# Install required packages
+packages:
+  - git
+
+# Install ansible and run the playbook
+runcmd:
+  - echo 'deb https://ppa.launchpad.net/ansible/ansible/ubuntu bionic main' >> /etc/apt/sources.list
+  - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
+  - apt-get install -y ansible
+  - mkdir -p /home/automation
+  - git clone https://github.com/vigneshwerv/thebanyan.git /home/automation
+  - ansible-playbook /home/automation/ansible/ssh.yml
