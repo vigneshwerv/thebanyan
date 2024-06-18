@@ -32,11 +32,6 @@
         path: /etc/ssh/sshd_config
         regexp: '^#PermitEmptyPasswords no'
         line: 'PermitEmptyPasswords no'
-    - name: "Disable PAM for SSH"
-      ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '^UsePAM yes'
-        line: 'UsePAM no'
     - name: "Enable public-key authentication for SSH"
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
