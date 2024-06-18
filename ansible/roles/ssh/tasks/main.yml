@@ -1,0 +1,33 @@
+- name: "Install fail2ban"
+  ansible.builtin.package:
+    name: fail2ban
+    state: latest
+- name: "Enable fail2ban on init and start it"
+  ansible.builtin.service:
+    name: fail2ban
+    state: started
+    enabled: yes
+- name: "Change default SSH port to 5138"
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#Port 22"
+    line: "Port 5138"
+- name: "Disable password-based logins"
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#PasswordAuthentication yes"
+    line: "PasswordAuthentication no"
+- name: "Disable empty password logins"
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#PermitEmptyPasswords no"
+    line: "PermitEmptyPasswords no"
+- name: "Enable public-key authentication for SSH"
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#PubkeyAuthentication yes"
+    line: "PubkeyAuthentication yes"
+- name: "Restart SSH server"
+  ansible.builtin.service:
+    name: ssh
+    state: restarted

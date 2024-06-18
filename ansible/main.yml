@@ -1,0 +1,5 @@
+- name: "Setup SSH server"
+  hosts: localhost
+  roles:
+    - ssh
+    - ssh-tarpit

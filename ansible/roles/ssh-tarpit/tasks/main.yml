@@ -1,0 +1,59 @@
+- name: "Install Endlessh dependencies"
+  ansible.builtin.package:
+    name:
+      - build-essential
+      - libc6-dev
+    state: latest
+- name: "Clone the Endlessh repo"
+  ansible.builtin.git:
+    repo: 'https://github.com/skeeto/endlessh'
+    dest: /home/endlessh
+- name: "Run make on the default target as root"
+  community.general.make:
+    chdir: /home/endlessh
+- name: "Does executable exist?"
+  ansible.builtin.stat:
+    path: /home/endlessh/endlessh
+  register: endlessh_stat
+- name: "Verify endlessh binary exists"
+  ansible.builtin.fail:
+    msg: "Failed to build endlessh. Could not find executable"
+  when: endless_stat.stat.exists
+- name: "Copy endlessh binary to /usr/local/bin"
+  ansible.builtin.copy:
+    src: /home/endlessh/endlessh
+    dest: /usr/local/bin/endlessh
+- name: "Copy the endlessh service definition"
+  ansible.builtin.copy:
+    src: /home/endlessh/util/endlessh.service
+    dest: /etc/systemd/system/endlessh.service
+- name: "Grant permissions to run Endlessh on port 80"
+  ansible.builtin.command:
+    argv:
+      - setcap
+      - "'cap_net_bind_service=+ep'"
+      - /usr/local/bin/endlessh
+- name: "Enable AmbientCapabilities in Endlessh"
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/system/endlessh.service
+    regexp: '^#AmbientCapabilities=CAP_NET_BIND_SERVICE'
+    line: 'AmbientCapabilities=CAP_NET_BIND_SERVICE'
+- name: "Disable PrivateUsers in Endlessh"
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/system/endlessh.service
+    regexp: '^PrivateUsers=true'
+    line: '#PrivateUsers=true'
+- name: "Create /etc/endlessh"
+  ansible.builtin.file:
+    path: /etc/endlessh
+    state: directory
+    mode: '0755'
+- name: "Create endlessh config"
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/endlessh_config"
+    dest: /etc/endlessh/config
+- name: "Start the endlessh service"
+  ansible.builtin.service:
+    name: endlessh
+    enabled: true
+    state: started
