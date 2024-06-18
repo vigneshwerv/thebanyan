@@ -5,27 +5,22 @@
       ansible.builtin.package:
         name: fail2ban
         state: latest
-    - name: "Change default SSH port to 557 (ssh_config)"
-      ansible.builtin.lineinfile:
-        path: /etc/ssh/ssh_config
-        regexp: '^#\s+Port 22'
-        line: '    Port 557'
-    - name: "Change default SSH port to 5138 (sshd_config)"
-      ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '^#Port 22'
-        line: 'Port 5138'
     - name: "Enable fail2ban on init and start it"
       ansible.builtin.service:
         name: fail2ban
         state: started
         enabled: yes
-    - name: "Disable SSH-based password logins"
+    - name: "Change default SSH port to 5138"
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#Port 22'
+        line: 'Port 5138'
+    - name: "Disable password-based logins"
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^#PasswordAuthentication yes'
         line: 'PasswordAuthentication no'
-    - name: "Disable empty password logins in SSH"
+    - name: "Disable empty password logins"
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^#PermitEmptyPasswords no'
