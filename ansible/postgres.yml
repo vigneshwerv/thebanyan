@@ -7,11 +7,16 @@
       ansible.builtin.package:
         name: fail2ban
         state: latest
-    - name: "Change default SSH port to 557"
+    - name: "Change default SSH port to 557 (ssh_config)"
       ansible.builtin.lineinfile:
         path: /etc/ssh/ssh_config
         regexp: '^#\s+Port 22'
         line: '    Port 557'
+    - name: "Change default SSH port to 5138 (sshd_config)"
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#Port 22'
+        line: 'Port 5138'
     - name: "Restart SSH server"
       ansible.builtin.service:
         name: ssh
