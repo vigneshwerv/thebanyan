@@ -17,12 +17,26 @@
         path: /etc/ssh/sshd_config
         regexp: '^#Port 22'
         line: 'Port 5138'
-    - name: "Restart SSH server"
-      ansible.builtin.service:
-        name: ssh
-        state: restarted
     - name: "Enable fail2ban on init and start it"
       ansible.builtin.service:
         name: fail2ban
         state: started
         enabled: yes
+    - name: "Disable SSH-based password logins"
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#PasswordAuthentication yes'
+        line: 'PasswordAuthentication no'
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regex: '^#PermitEmptyPasswords no'
+        line: 'PermitEmptyPasswords no'
+    - name: "Disable PAM for SSH"
+      ansible.builtin.lineinfile
+        path: /etc/ssh/sshd_config
+        regex: '^UsePAM yes'
+        line: 'UsePAM no'
+    - name: "Restart SSH server"
+      ansible.builtin.service:
+        name: ssh
+        state: restarted
