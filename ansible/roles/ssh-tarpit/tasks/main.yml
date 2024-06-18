@@ -31,7 +31,7 @@
   ansible.builtin.command:
     argv:
       - setcap
-      - "'cap_net_bind_service=+ep'"
+      - 'cap_net_bind_service=+ep'
       - /usr/local/bin/endlessh
 - name: "Enable AmbientCapabilities in Endlessh"
   ansible.builtin.lineinfile:
