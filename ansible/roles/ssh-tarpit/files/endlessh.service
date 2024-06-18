@@ -22,7 +22,7 @@ PrivateTmp=true
 PrivateDevices=true
 ProtectSystem=full
 ProtectHome=true
-InaccessiblePaths=/run /var
+#InaccessiblePaths=/run /var
 
 ## If you want Endlessh to bind on ports < 1024
 ## 1) run:
